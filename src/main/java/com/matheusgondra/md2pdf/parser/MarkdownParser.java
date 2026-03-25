@@ -1,4 +1,4 @@
-package com.matheusgondra.md2pdf.service;
+package com.matheusgondra.md2pdf.parser;
 
 import org.springframework.stereotype.Service;
 
