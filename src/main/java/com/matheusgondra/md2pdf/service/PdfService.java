@@ -34,8 +34,9 @@ public class PdfService {
 
             return outputStream.toByteArray();
         } catch (IOException e) {
-            log.error("Error processing file: {}", file.getOriginalFilename(), e);
-            throw new RuntimeException(e);
+            String errorMessage = "Error processing file: " + file.getOriginalFilename();
+            log.error(errorMessage, e);
+            throw new RuntimeException(errorMessage, e);
         }
     }
 }
