@@ -2,6 +2,7 @@ package com.matheusgondra.md2pdf.parser;
 
 import org.springframework.stereotype.Service;
 
+import com.matheusgondra.md2pdf.template.HtmlDocumentBuilder;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Document;
@@ -17,7 +18,9 @@ public class MarkdownParser {
     }
 
     public String parseToHTML(String markdown) {
-        Document document = parser.parse(markdown);
-        return renderer.render(document);
+        Document body = parser.parse(markdown);
+        String htmlBody = renderer.render(body);
+
+        return HtmlDocumentBuilder.build(htmlBody);
     }
 }

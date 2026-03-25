@@ -25,21 +25,7 @@ public class PdfService {
         try (var outputStream = new ByteArrayOutputStream()) {
             String markdownContent = new String(file.getBytes(), StandardCharsets.UTF_8);
 
-            String htmlBodyContent = markdownParser.parseToHTML(markdownContent);
-            String html = new StringBuilder()
-                    .append("<!DOCTYPE html> <html lang=\"pt-br\"> <head>")
-                    .append("<meta charset=\"UTF-8\"/>")
-                    .append("<style>")
-                    .append("body { font-family: 'Arial', sans-serif; line-height: 1.6; margin: 50px; color: #333; }")
-                    .append("h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }")
-                    .append("h2 { color: #2980b9; margin-top: 25px; border-left: 5px solid #3498db; padding-left: 10px; }")
-                    .append("li { margin-bottom: 10px; }")
-                    .append("a { color: #3498db; text-decoration: underline; }")
-                    .append("strong { color: #e74c3c; }")
-                    .append("</style></head><body>")
-                    .append(htmlBodyContent)
-                    .append("</body></html>")
-                    .toString();
+            String html = markdownParser.parseToHTML(markdownContent);
 
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.withHtmlContent(html, "/");
