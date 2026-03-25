@@ -1,31 +1,30 @@
 package com.matheusgondra.md2pdf.service;
 
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.util.data.MutableDataSet;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class PdfService {
+    private final MarkdownParser markdownParser;
+
     public byte[] execute(MultipartFile file) {
         log.info("Processing file: {}", file.getOriginalFilename());
 
         try (var outputStream = new ByteArrayOutputStream()) {
             String markdownContent = new String(file.getBytes(), StandardCharsets.UTF_8);
 
-            MutableDataSet options = new MutableDataSet();
-            Parser parser = Parser.builder(options).build();
-            HtmlRenderer renderer = HtmlRenderer.builder(options).build();
-
-            String bodyContent = renderer.render(parser.parse(markdownContent));
+            String htmlBodyContent = markdownParser.parseToHTML(markdownContent);
             String html = new StringBuilder()
                     .append("<!DOCTYPE html> <html lang=\"pt-br\"> <head>")
                     .append("<meta charset=\"UTF-8\"/>")
@@ -37,7 +36,7 @@ public class PdfService {
                     .append("a { color: #3498db; text-decoration: underline; }")
                     .append("strong { color: #e74c3c; }")
                     .append("</style></head><body>")
-                    .append(bodyContent)
+                    .append(htmlBodyContent)
                     .append("</body></html>")
                     .toString();
 
