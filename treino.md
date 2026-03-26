@@ -1,3 +1,0 @@
-# Plano de treino
-
-Plano

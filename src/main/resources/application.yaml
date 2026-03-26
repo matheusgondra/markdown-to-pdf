@@ -17,3 +17,4 @@ scalar:
   path: /docs
   theme: bluePlanet
   dark-mode: true
+  pageTitle: Markdown to PDF API Documentation
