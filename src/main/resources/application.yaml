@@ -8,3 +8,12 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+
+springdoc:
+  api-docs:
+    path: /api-docs
+
+scalar:
+  path: /docs
+  theme: bluePlanet
+  dark-mode: true
