@@ -2,6 +2,7 @@ package com.matheusgondra.md2pdf.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.stereotype.Service;
@@ -27,9 +28,7 @@ public class PdfService {
 
             String html = markdownParser.parseToHTML(markdownContent);
 
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.withHtmlContent(html, "/");
-            builder.toStream(outputStream);
+            PdfRendererBuilder builder = createPdfRendererBuilder(html, outputStream);
             builder.run();
 
             return outputStream.toByteArray();
@@ -38,5 +37,15 @@ public class PdfService {
             log.error(errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         }
+    }
+
+    private PdfRendererBuilder createPdfRendererBuilder(String html, OutputStream outputStream) {
+        PdfRendererBuilder builder = new PdfRendererBuilder();
+
+        builder.withHtmlContent(html, "/");
+        builder.useFastMode();
+        builder.toStream(outputStream);
+
+        return builder;
     }
 }
