@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.matheusgondra.md2pdf.controller.doc.ConvertMarkdownToPdfControllerDoc;
+import com.matheusgondra.md2pdf.exception.InvalidFileException;
+import com.matheusgondra.md2pdf.exception.RequiredArgumentException;
 import com.matheusgondra.md2pdf.service.PdfService;
+import com.matheusgondra.md2pdf.validation.MarkdownFileValidation;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +28,14 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/markdown-to-pdf")
 public class ConvertMarkdownToPdfController {
     private final PdfService service;
+    private final MarkdownFileValidation validation;
 
     @ConvertMarkdownToPdfControllerDoc
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> handle(@RequestParam("file") MultipartFile file) {
         try {
+            validation.validate(file);
+
             byte[] pdfBytes = service.execute(file);
             String outputName = Objects.requireNonNull(file.getOriginalFilename()).replace(".md", ".pdf");
 
@@ -38,6 +44,8 @@ public class ConvertMarkdownToPdfController {
             headers.setContentDisposition(ContentDisposition.attachment().filename(outputName).build());
 
             return ResponseEntity.ok().headers(headers).body(pdfBytes);
+        } catch (RequiredArgumentException | InvalidFileException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage().getBytes());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
