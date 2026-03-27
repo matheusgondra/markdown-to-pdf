@@ -1,10 +1,7 @@
 package com.matheusgondra.md2pdf.controller;
 
-import java.util.Objects;
-
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.matheusgondra.md2pdf.controller.doc.ConvertMarkdownToPdfControllerDoc;
-import com.matheusgondra.md2pdf.exception.InvalidFileException;
-import com.matheusgondra.md2pdf.exception.RequiredArgumentException;
 import com.matheusgondra.md2pdf.service.PdfService;
 import com.matheusgondra.md2pdf.validation.MarkdownFileValidation;
 
