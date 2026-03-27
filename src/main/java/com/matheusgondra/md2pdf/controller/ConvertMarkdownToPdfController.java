@@ -33,22 +33,16 @@ public class ConvertMarkdownToPdfController {
     @ConvertMarkdownToPdfControllerDoc
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> handle(@RequestParam("file") MultipartFile file) {
-        try {
-            validation.validate(file);
+        validation.validate(file);
 
-            byte[] pdfBytes = service.execute(file);
-            String outputName = Objects.requireNonNull(file.getOriginalFilename()).replace(".md", ".pdf");
+        byte[] pdfBytes = service.execute(file);
+        String outputName = file.getOriginalFilename().replace(".md", ".pdf");
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(ContentDisposition.attachment().filename(outputName).build());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.attachment().filename(outputName).build());
 
-            return ResponseEntity.ok().headers(headers).body(pdfBytes);
-        } catch (RequiredArgumentException | InvalidFileException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage().getBytes());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok().headers(headers).body(pdfBytes);
     }
 
 }
